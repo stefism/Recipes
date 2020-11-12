@@ -2,17 +2,6 @@
 {
     using System.Reflection;
 
-    using Recipes.Data;
-    using Recipes.Data.Common;
-    using Recipes.Data.Common.Repositories;
-    using Recipes.Data.Models;
-    using Recipes.Data.Repositories;
-    using Recipes.Data.Seeding;
-    using Recipes.Services.Data;
-    using Recipes.Services.Mapping;
-    using Recipes.Services.Messaging;
-    using Recipes.Web.ViewModels;
-
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -21,6 +10,15 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Recipes.Data;
+    using Recipes.Data.Common;
+    using Recipes.Data.Common.Repositories;
+    using Recipes.Data.Models;
+    using Recipes.Data.Repositories;
+    using Recipes.Data.Seeding;
+    using Recipes.Services.Mapping;
+    using Recipes.Services.Messaging;
+    using Recipes.Web.ViewModels;
 
     public class Startup
     {
@@ -31,7 +29,7 @@
             this.configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container. //
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(
@@ -63,7 +61,6 @@
 
             // Application services
             services.AddTransient<IEmailSender, NullMessageSender>();
-            services.AddTransient<ISettingsService, SettingsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

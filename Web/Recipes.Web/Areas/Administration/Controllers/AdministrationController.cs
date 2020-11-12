@@ -1,10 +1,9 @@
 ﻿namespace Recipes.Web.Areas.Administration.Controllers
 {
-    using Recipes.Common;
-    using Recipes.Web.Controllers;
-
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Recipes.Common;
+    using Recipes.Web.Controllers;
 
     [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
     [Area("Administration")]

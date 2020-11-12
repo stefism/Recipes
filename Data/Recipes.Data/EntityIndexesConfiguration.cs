@@ -2,9 +2,8 @@
 {
     using System.Linq;
 
-    using Recipes.Data.Common.Models;
-
     using Microsoft.EntityFrameworkCore;
+    using Recipes.Data.Common.Models;
 
     internal static class EntityIndexesConfiguration
     {

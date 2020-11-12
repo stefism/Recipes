@@ -6,11 +6,10 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Recipes.Data.Common.Models;
-    using Recipes.Data.Models;
-
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
+    using Recipes.Data.Common.Models;
+    using Recipes.Data.Models;
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
@@ -24,7 +23,15 @@
         {
         }
 
-        public DbSet<Setting> Settings { get; set; }
+        public DbSet<Recipe> Recipes { get; set; }
+
+        public DbSet<Category> Categories { get; set; }
+
+        public DbSet<Image> Images { get; set; }
+
+        public DbSet<Ingredient> Ingredients { get; set; }
+
+        public DbSet<RecipeIngredient> RecipeIngredients { get; set; }
 
         public override int SaveChanges() => this.SaveChanges(true);
 
