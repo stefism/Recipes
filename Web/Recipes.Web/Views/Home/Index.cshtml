@@ -1,18 +1,18 @@
 ﻿@using Recipes.Common
 @model Recipes.Web.ViewModels.Home.IndexViewModel
 @{
-    this.ViewData["Title"] = "Home Page";
+    this.ViewData["Title"] = "Начална страница";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome to @GlobalConstants.SystemName!</h1>
+    <h1 class="display-4">Добре дошли в сайта за рецепти.</h1>
     <div class="col-md-4 offset-md-4">
-        <p>We have:</p>
+        <p>При нас има:</p>
         <ul class="list-group">
-            <li class="list-group-item bg-info">Recipes: @Model.RecepiesCount</li>
-            <li class="list-group-item bg-light">Categories: @Model.CategoriesCount</li>
-            <li class="list-group-item bg-info">Images: @Model.ImagesCount</li>
-            <li class="list-group-item bg-light">Ingeredients: @Model.IngredientsCount</li>
+            <li class="list-group-item bg-info">Рецепти: @Model.RecepiesCount</li>
+            <li class="list-group-item bg-light">Категории: @Model.CategoriesCount</li>
+            <li class="list-group-item bg-info">Снимки: @Model.ImagesCount</li>
+            <li class="list-group-item bg-light">Съставки: @Model.IngredientsCount</li>
         </ul>
     </div>
 </div>
