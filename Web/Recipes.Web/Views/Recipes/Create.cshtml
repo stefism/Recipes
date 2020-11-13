@@ -7,7 +7,7 @@
 
 <h1>Добавяне на нова рецепта:</h1>
 
-<form method="post" class="col-md-6">
+<form method="post" class="col-md-8">
     <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="form-group">
@@ -46,7 +46,22 @@
         <span asp-validation-for="CategoryId" class="text-danger"></span>
     </div>
 
-    <input type="submit" class="btn btn-primary" />
+    <div id="IngredientsContainer">
+        <a class="btn btn-success" onclick="AddMoreIngredients()">Добавяне на съставка</a>
+        <hr />
+    </div>
+    <hr />
+    <input  type="submit" class="btn btn-primary" />
 
 </form>
 
+@section Scripts {
+    <script>
+        var ingredientIndex = 0;
+        function AddMoreIngredients() {
+            console.log("AddMoreIngredients()");
+            $("#IngredientsContainer").append("<div class='form-control'>Име: <input type='text' name='Ingredients[" + ingredientIndex + "].IngredientName' id=' ' /> Количество: <input type='text' name='Ingredients[" + ingredientIndex +"].Quantity' id=' ' /></div>");
+            ingredientIndex++;
+        }
+    </script>
+}

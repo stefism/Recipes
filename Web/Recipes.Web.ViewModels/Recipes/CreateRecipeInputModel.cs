@@ -28,6 +28,7 @@
         [Display(Name = "Брой порции:")]
         public int PortionCount { get; set; }
 
+        [Display(Name = "Изберете категория:")]
         public int CategoryId { get; set; }
 
         public IEnumerable<RecipeIngredientInputModel> Ingredients { get; set; }
