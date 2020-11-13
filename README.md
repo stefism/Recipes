@@ -1,0 +1,1 @@
+In this project, in addition to the standard functionalities such as adding, searching, etc. I will try to implement the possibility to generate a recipe based on ingredients submitted by the user.
