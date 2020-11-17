@@ -23,6 +23,8 @@
 
         public int PortionCount { get; set; }
 
+        public string OriginalUrl { get; set; }
+
         public string AddedByUserId { get; set; }
 
         public virtual ApplicationUser AddedByUser { get; set; } // С този клас се връзваме към потребителите от автоматично направените ни таблици за User identity.
