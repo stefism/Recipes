@@ -1,7 +1,9 @@
 ﻿namespace Recipes.Services
 {
+    using System.Threading.Tasks;
+
     public interface IGotvachBgScrapperService
     {
-        void PopulateDbWithRecipes();
+        Task PopulateDbWithRecipesAsync(int recipesCount);
     }
 }

@@ -16,6 +16,7 @@
     using Recipes.Data.Models;
     using Recipes.Data.Repositories;
     using Recipes.Data.Seeding;
+    using Recipes.Services;
     using Recipes.Services.Data;
     using Recipes.Services.Mapping;
     using Recipes.Services.Messaging;
@@ -66,6 +67,7 @@
             services.AddTransient<IGetCountService, GetCountService>();
             services.AddTransient<ICategoriesService, CategoriesService>();
             services.AddTransient<IRecipeService, RecipeService>();
+            services.AddTransient<IGotvachBgScrapperService, GotvachBgScrapperService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -77,7 +79,7 @@
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                dbContext.Database.Migrate();
+                // dbContext.Database.Migrate();
                 new ApplicationDbContextSeeder().SeedAsync(dbContext, serviceScope.ServiceProvider).GetAwaiter().GetResult();
             }
 

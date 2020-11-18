@@ -1,0 +1,9 @@
+﻿@using Recipes.Common
+@model Recipes.Web.ViewModels.Home.IndexViewModel
+@{
+    this.ViewData["Title"] = "Взимане на рецепти от Готвач.Бг";
+}
+
+<div class="text-center">
+    <a class="button" asp-controller="GatherRecipers" asp-action="Add">Add data</a>   
+</div>

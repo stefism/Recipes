@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Net;
@@ -22,21 +21,27 @@
 
         private readonly IDeletableEntityRepository<Category> categoryRepository;
         private readonly IDeletableEntityRepository<Ingredient> ingredientRepository;
+        private readonly IDeletableEntityRepository<Recipe> recipeRepository;
+        private readonly IRepository<RecipeIngredient> recipeIngredientRepository;
+        private readonly IRepository<Image> imageRepository;
 
-        public GotvachBgScrapperService(IDeletableEntityRepository<Category> categoryRepository, IDeletableEntityRepository<Ingredient> ingredientRepository)
+        public GotvachBgScrapperService(IDeletableEntityRepository<Category> categoryRepository, IDeletableEntityRepository<Ingredient> ingredientRepository, IDeletableEntityRepository<Recipe> recipeRepository, IRepository<RecipeIngredient> recipeIngredientRepository, IRepository<Image> imageRepository)
         {
             this.config = Configuration.Default.WithDefaultLoader();
             this.context = BrowsingContext.New(this.config);
 
             this.categoryRepository = categoryRepository;
             this.ingredientRepository = ingredientRepository;
+            this.recipeRepository = recipeRepository;
+            this.recipeIngredientRepository = recipeIngredientRepository;
+            this.imageRepository = imageRepository;
         }
 
-        public async Task PopulateDbWithRecipes()
+        public async Task PopulateDbWithRecipesAsync(int recipesCount)
         {
             var concurentBag = new ConcurrentBag<RecipeDto>();
 
-            Parallel.For(1, 300, (i) =>
+            Parallel.For(1, recipesCount, (i) =>
             {
                 try
                 {
@@ -49,16 +54,79 @@
             foreach (var recipe in concurentBag)
             {
                 var categoryId = await this.GetOrCreateCategoryAsync(recipe.CategoryName);
-                var ingredientIds = await this.GetOrCreateIngredientAsync(recipe.IngredientsName);
+
+                bool recipeExist = this.recipeRepository.AllAsNoTracking()
+                    .Any(r => r.Name == recipe.RecipeName);
+
+                if (recipeExist)
+                {
+                    continue;
+                }
+
+                var newRecipe = new Recipe
+                {
+                    Name = recipe.RecipeName,
+                    Instructions = recipe.Instructions,
+                    PreparationTime = recipe.PreparationTime,
+                    CookingTime = recipe.CookingTime,
+                    PortionCount = recipe.PortionsCount,
+                    OriginalUrl = recipe.OriginalUrl,
+                    CategoryId = categoryId,
+                };
+
+                await this.recipeRepository.AddAsync(newRecipe);
+                await this.recipeRepository.SaveChangesAsync();
+
+                foreach (var item in recipe.Ingredients)
+                {
+                    var ingr = item.Split("-");
+                    if (ingr.Length < 2)
+                    {
+                        continue;
+                    }
+
+                    var ingredientId = await this.GetOrCreateIngredientAsync(ingr[0].Trim());
+                    var qty = ingr[1].Trim();
+
+                    var recipeIngredient = new RecipeIngredient
+                    {
+                        IngredientId = ingredientId,
+                        RecipeId = newRecipe.Id,
+                        Quantity = qty,
+                    };
+
+                    await this.recipeIngredientRepository.AddAsync(recipeIngredient);
+                    await this.recipeIngredientRepository.SaveChangesAsync();
+                }
+
+                var image = new Image
+                {
+                    Extension = recipe.OriginalUrl,
+                    RecipeId = newRecipe.Id,
+                };
+
+                await this.imageRepository.AddAsync(image);
+                await this.imageRepository.SaveChangesAsync();
             }
         }
 
-        private async Task<IEnumerable<int>> GetOrCreateIngredientAsync(List<string> ingredientsName)
+        private async Task<int> GetOrCreateIngredientAsync(string name)
         {
-            foreach (var ingredientName in ingredientsName)
-            {
+            var ingredient = this.ingredientRepository.AllAsNoTracking()
+                .FirstOrDefault(x => x.Name == name);
 
+            if (ingredient == null)
+            {
+                ingredient = new Ingredient
+                {
+                    Name = name,
+                };
+
+                await this.ingredientRepository.AddAsync(ingredient);
+                await this.ingredientRepository.SaveChangesAsync();
             }
+
+            return ingredient.Id;
         }
 
         private async Task<int> GetOrCreateCategoryAsync(string categoryName)
@@ -74,6 +142,7 @@
                 };
 
                 await this.categoryRepository.AddAsync(category);
+                await this.categoryRepository.SaveChangesAsync();
             }
 
             return category.Id;
@@ -149,27 +218,13 @@
             // Console.WriteLine(imageUrl);
 
             var ingredients = document.QuerySelectorAll(".products li");
+
             foreach (var ingredient in ingredients)
             {
-                var ingredientInfo = ingredient.TextContent.Split("-");
-
-                if (ingredientInfo.Length < 2)
-                {
-                    continue;
-                }
-
-                var ingredientName = ingredientInfo[0].Trim();
-                var ingredientQuantity = ingredientInfo[1].Trim();
-
-                recipe.IngredientsName.Add(ingredientName);
-                recipe.IngredientsQuantity.Add(ingredientQuantity);
-
-                // Console.WriteLine(ingredient.TextContent);
+                recipe.Ingredients.Add(ingredient.TextContent);
             }
 
             return recipe;
-
-            // Console.WriteLine($"{id} found.");
         }
     }
 }

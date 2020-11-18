@@ -7,8 +7,7 @@
     {
         public RecipeDto()
         {
-            this.IngredientsName = new List<string>();
-            this.IngredientsQuantity = new List<string>();
+            this.Ingredients = new List<string>();
         }
 
         public string CategoryName { get; set; }
@@ -27,8 +26,6 @@
 
         public string Extension { get; set; }
 
-        public List<string> IngredientsName { get; set; }
-
-        public List<string> IngredientsQuantity { get; set; }
+        public List<string> Ingredients { get; set; }
     }
 }
