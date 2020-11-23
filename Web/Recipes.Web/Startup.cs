@@ -54,6 +54,8 @@
                     }).AddRazorRuntimeCompilation();
             services.AddRazorPages();
 
+            services.AddDatabaseDeveloperPageExceptionFilter(); // Добавя се при миграция към .net 5.0
+
             services.AddSingleton(this.configuration);
 
             // Data repositories
@@ -73,12 +75,14 @@
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // ЗА АУТОМАПЕРА НА НИКИ!
             AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
 
             // Seed data on application startup
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
                 // dbContext.Database.Migrate();
                 new ApplicationDbContextSeeder().SeedAsync(dbContext, serviceScope.ServiceProvider).GetAwaiter().GetResult();
             }
@@ -86,7 +90,10 @@
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint();
+
+                // app.UseDatabaseErrorPage(); Това е остаряло и като се мигрира от стар проект на 5.0, трябва да се махне и да се замести с горното -> app.UseMigrationsEndPoint();
+                // Добавя се идин сървиз -> services.AddDatabaseDeveloperPageExceptionFilter();
             }
             else
             {
