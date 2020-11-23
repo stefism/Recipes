@@ -1,9 +1,9 @@
 ﻿namespace Recipes.Data.Seeding
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
 
-    using Microsoft.EntityFrameworkCore.Internal;
     using Recipes.Data.Models;
 
     public class CategoriesSeeder : ISeeder
