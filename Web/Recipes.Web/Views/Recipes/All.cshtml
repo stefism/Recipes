@@ -1,0 +1,32 @@
+﻿@model Recipes.Web.ViewModels.Recipes.RecipesListViewModel
+@* Задължително модела, който ползваме, трябва да наследи PagingViewModel, ако искаме да можем по-надолу в кода да ползваме Partial view. *@
+@{
+    ViewData["Title"] = "Всички рецепти";
+}
+
+<h1>@ViewData["Title"], страница @Model.PageNumber от @Model.PagesCount</h1>
+<hr />
+
+<partial name="_PagingPartial" model="@Model" />
+
+<div class="row">
+    @foreach (var recipe in Model.Recipes)
+    {
+        <div class="media col-md-4">
+            <img width="65px" src="@recipe.ImageUrl" class="mr-3" alt="...">
+            <div class="media-body">
+                <h5 class="mt-0">@recipe.Name</h5>
+                @recipe.CategoryName
+                <hr />
+            </div>
+        </div>
+    }
+</div>
+
+@* Start paging section - Изнесена е като Partial view. Може и първа и последна страница да се добави тук.*@
+
+<partial name="_PagingPartial" model="@Model" />
+
+@* End paging section.
+    Задължително трябва да подадем и модела в partial секцията - model="@Model
+*@

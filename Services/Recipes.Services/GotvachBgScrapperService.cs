@@ -79,7 +79,7 @@
 
                 foreach (var item in recipe.Ingredients)
                 {
-                    var ingr = item.Split("-");
+                    var ingr = item.Split(" - ", 2);
                     if (ingr.Length < 2)
                     {
                         continue;
@@ -193,7 +193,7 @@
                 .Replace("Приготвяне", string.Empty)
                 .Replace(" мин.", string.Empty);
 
-                recipe.PreparationTime = TimeSpan.ParseExact(prepTime, "mm", CultureInfo.InvariantCulture);
+                recipe.PreparationTime = TimeSpan.FromMinutes(int.Parse(prepTime));
                 // Console.WriteLine(prepTime);
             }
 
@@ -202,7 +202,7 @@
                 var cookingTime = timing[1].TextContent
                 .Replace("Готвене", string.Empty)
                 .Replace(" мин.", string.Empty);
-                recipe.CookingTime = TimeSpan.ParseExact(cookingTime, "mm", CultureInfo.InvariantCulture);
+                recipe.CookingTime = TimeSpan.FromMinutes(int.Parse(cookingTime));
                 // Console.WriteLine(cookingTime);
             }
 
@@ -212,7 +212,7 @@
             recipe.PortionsCount = int.Parse(portionCount);
             // Console.WriteLine(portionCount.TextContent);
 
-            var imageUrl = document
+            recipe.OriginalUrl = document
                 .QuerySelector("#newsGal > div.image > img")
                 .GetAttribute("src");
             // Console.WriteLine(imageUrl);

@@ -4,19 +4,21 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
+    using global::Recipes.Common.Constants;
+
     public class CreateRecipeInputModel
     {
-        [Required(ErrorMessage = "Задължително трябва да попълните това поле.")]
-        [MinLength(4, ErrorMessage = "Името на рецептата трябва да бъде с дължина поне 4 символа.")]
-        [Display(Name ="Име на рецептата:")]
+        [Required(ErrorMessage = BgUIMessages.ThisFieldIsRequired)]
+        [MinLength(4, ErrorMessage = BgUIMessages.RecipeNameMustBe4Characters)]
+        [Display(Name = BgUIMessages.RecipeName)]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "Задължително трябва да попълните това поле.")]
-        [MinLength(100, ErrorMessage = "Инструкцията трябва да е с дължина поне 100 символа.")]
-        [Display(Name ="Инструкции за приготвяне:")]
+        [Required(ErrorMessage = BgUIMessages.ThisFieldIsRequired)]
+        [MinLength(100, ErrorMessage = BgUIMessages.InstructionMustBe100Characters)]
+        [Display(Name = BgUIMessages.CookInstructions)]
         public string Instructions { get; set; }
 
-        [Range(0, 24 * 60, ErrorMessage = "Времето за готвене трябва да е максимално два дни, изчислено в минути.")]
+        [Range(0, 24 * 60, ErrorMessage = BgUIMessages.PrepTimeMustBe2Days)]
         [Display(Name ="Време за подготовка в минути:")]
         public int PreparationTime { get; set; }
 

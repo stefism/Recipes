@@ -8,6 +8,7 @@
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/site.min.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/site.css" rel="stylesheet" />
+    @await this.RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
@@ -26,11 +27,14 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Начало</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Поверителност</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Recipes" asp-action="All">Всички рецепти</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Recipes" asp-action="Create">Създаване на рецепта</a>
-                            </li>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Recipes" asp-action="Create">Създаване на рецепта</a>
+                                </li>
+                            }
                         </ul>
                     </div>
                 </div>
