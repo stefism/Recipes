@@ -1,0 +1,33 @@
+﻿@model Recipes.Web.ViewModels.Recipes.SingleRecipeViewModel
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<script src="https://kit.fontawesome.com/3c54b527d8.js" crossorigin="anonymous"></script>
+
+<div class="recipeElements">
+    <h4><b><i class="fas fa-utensils"></i> Категория:</b> @Model.CategoryName <span>(В тази категория има общо @Model.CategoryRecipesCount рецепти)</span></h4>
+    <h5><b>@Model.Name 
+        @if (Model.OriginalUrl != null)
+        {
+            <l> (Рецептата е взета от @Model.OriginalUrl)</l>
+        }
+        </b></h5>
+    <br />
+    <p><b><i class="far fa-calendar-alt"></i> Дата на добавяне:</b> @Model.CreatedOn.ToShortDateString() | <b><i class="fas fa-user-tie"></i> Добавена от:</b> @(Model.AddedByUserUserName ?? "Неизвестен") | <b><i class="fas fa-user-check"></i> Обща оценка:</b> 4.5 от 5</p>
+    <p><b><i class="fas fa-history"></i> Време за подготовка: </b>@Model.PreparationTime.TotalMinutes минути. | <b><i class="fas fa-clock"></i> Време за готвене: </b>@Model.CookingTime.TotalMinutes минути. | <b><i class="fas fa-user-friends"></i> Брой порции: </b>@Model.PortionCount</p>
+    <img class="img-fluid" src="@Model.ImageUrl" alt="снимка" />
+    <hr />
+    <h5><i class="far fa-address-book"></i> Съставки:</h5>
+    <div class="ingredients">
+        <ul>
+            @foreach (var ingredient in Model.Ingredients)
+            {
+                <li>@ingredient.IngredientName - <b>@ingredient.Quantity</b></li>
+            }
+        </ul>
+    </div>
+    <hr />
+    <h5><i class="fas fa-book-open"></i> Начин на приготвяне:</h5>
+    <p>@Model.Instructions</p>
+</div>

@@ -15,7 +15,7 @@
         <div class="media col-md-4">
             <img width="65px" src="@recipe.ImageUrl" class="mr-3" alt="...">
             <div class="media-body">
-                <h5 class="mt-0">@recipe.Name</h5>
+                <h5 class="mt-0"><a asp-action="ById" asp-route-id="@recipe.Id">@recipe.Name</a></h5>
                 @recipe.CategoryName
                 <hr />
             </div>
