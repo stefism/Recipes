@@ -56,6 +56,12 @@
 
             services.AddDatabaseDeveloperPageExceptionFilter(); // Добавя се при миграция към .net 5.0
 
+            // Това се прави ако ползваме Ajax за да зададем в java script-а анти форжери токена! opt.HeaderName - ние му казваме как искаме да се казва хедъра.
+            services.AddAntiforgery(opt =>
+            {
+                opt.HeaderName = "X-CSRF-TOKEN";
+            });
+
             services.AddSingleton(this.configuration);
 
             // Data repositories
@@ -70,6 +76,7 @@
             services.AddTransient<ICategoriesService, CategoriesService>();
             services.AddTransient<IRecipeService, RecipeService>();
             services.AddTransient<IGotvachBgScrapperService, GotvachBgScrapperService>();
+            services.AddTransient<IVotesService, VotesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
