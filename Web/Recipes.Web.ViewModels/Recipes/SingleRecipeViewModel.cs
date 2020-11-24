@@ -42,7 +42,10 @@ namespace Recipes.Web.ViewModels.Recipes
         {
             configuration.CreateMap<Recipe, SingleRecipeViewModel>()
                 .ForMember(x => x.VotesAverageValue, opt =>
-                opt.MapFrom(x => x.Votes.Average(v => v.Value)))
+                opt.MapFrom(
+                    x => x.Votes.Count() == 0
+                    ? 0 // Ако каунта е нула, върни нула. Иначе изпълни другото.
+                    : x.Votes.Average(v => v.Value))) // Ако няма гласували за рецептата ще гръмне заради Average, който дели на нула. При взимане на Average върху празен списък се получава грешка. Затова му казваме - ако няма гласували - върни нула.
 
                 .ForMember(x => x.ImageUrl, opt =>
                 opt.MapFrom(x =>
