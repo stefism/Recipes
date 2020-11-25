@@ -1,13 +1,11 @@
-﻿using Recipes.Data.Common.Repositories;
-using Recipes.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Recipes.Services.Data
+﻿namespace Recipes.Services.Data
 {
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using Recipes.Data.Common.Repositories;
+    using Recipes.Data.Models;
+
     public class VotesService : IVotesService
     {
         private readonly IRepository<Vote> votesRepo;
