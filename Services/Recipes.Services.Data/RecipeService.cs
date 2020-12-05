@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+
     using Microsoft.AspNetCore.Hosting;
     using Recipes.Data.Common.Repositories;
     using Recipes.Data.Models;
@@ -130,6 +131,30 @@
         public int GetCount()
         {
             return this.recipesRepository.All().Count();
+        }
+
+        public IEnumerable<T> GetRandom<T>(int count)
+        {
+            return this.recipesRepository.All()
+                .OrderBy(x => Guid.NewGuid())
+                .Take(count)
+                .To<T>().ToList();
+            // Guid.NewGuid() - специаленс случай в EF, където му се казва да сортира по случаен принцип.
+            // To<T> - ауто мапва от Recipe към IndexPageRecipeViewModel.
+        }
+
+        public async Task UpdateAsync(int id, EditRecipeInputModel input)
+        {
+            var recipe = this.recipesRepository.All().FirstOrDefault(x => x.Id == id);
+
+            recipe.Name = input.Name;
+            recipe.Instructions = input.Instructions;
+            recipe.CookingTime = TimeSpan.FromMinutes(input.CookingTime);
+            recipe.PreparationTime = TimeSpan.FromMinutes(input.PreparationTime);
+            recipe.PortionCount = input.PortionCount;
+            recipe.CategoryId = input.CategoryId;
+
+            await this.recipesRepository.SaveChangesAsync();
         }
     }
 }

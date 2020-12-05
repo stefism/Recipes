@@ -30,6 +30,30 @@
         }
 
         [Authorize]
+        public IActionResult Edit(int id)
+        {
+            var inputModel = this.recipeService.GetById<EditRecipeInputModel>(id);
+            inputModel.CategoriesItems = this.categoriesService
+                .GetAllAsKeyValuePairs();
+
+            return this.View(inputModel);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Edit(int id, EditRecipeInputModel recipe)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View();
+            }
+
+            await this.recipeService.UpdateAsync(id, recipe);
+
+            return this.RedirectToAction(nameof(this.ById), new { id }); // new { id } (new { id  = id})- би трябвало горе в адрес бара да сложи Id-то.
+        }
+
+        [Authorize]
         public IActionResult Create()
         {
             var viewModel = new CreateRecipeInputModel();
@@ -71,7 +95,11 @@
                 return this.View(input);
             }
 
-            return this.Redirect("/");
+            // Ползване на TempData:
+            // Пренася нещо между две заявки. В случая ще пренесе съобщението до All и след това TempData ще се изчисти.
+            this.TempData["Message"] = "Recipe added successfully.";
+
+            return this.RedirectToAction("All");
         }
 
         public IActionResult All(int id = 1) // За пейджирането. Това ще бъде номера на страницата.
@@ -98,6 +126,7 @@
         {
             var viewModel = this.recipeService
                 .GetById<SingleRecipeViewModel>(id);
+            
             return this.View(viewModel);
         }
     }

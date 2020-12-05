@@ -7,6 +7,11 @@
 <h1>@ViewData["Title"], страница @Model.PageNumber от @Model.PagesCount</h1>
 <hr />
 
+@if (TempData.ContainsKey("Message"))
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
 <partial name="_PagingPartial" model="@Model" />
 
 <div class="row">

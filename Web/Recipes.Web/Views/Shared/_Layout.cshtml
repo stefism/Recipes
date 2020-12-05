@@ -35,6 +35,12 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Recipes" asp-action="Create">Създаване на рецепта</a>
                                 </li>
                             }
+                            @if (User.IsInRole(GlobalConstants.AdministratorRoleName))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Administration" asp-controller="Categories" asp-action="Index">Админ на категория</a>
+                                </li>
+                            }
                         </ul>
                     </div>
                 </div>
