@@ -10,23 +10,28 @@
 
 <div class="recipeElements">
     <h4><b><i class="fas fa-utensils"></i> Категория:</b> @Model.CategoryName <span>(В тази категория има общо @Model.CategoryRecipesCount рецепти)</span></h4>
-    <h5><b>@Model.Name 
-        @if (Model.OriginalUrl != null)
-        {
-            <l> (Рецептата е взета от @Model.OriginalUrl)</l>
-        }
-        </b></h5>
+    <h5>
+        <b>
+            @Model.Name
+            @if (Model.OriginalUrl != null)
+            {
+                <l> (Рецептата е взета от @Model.OriginalUrl)</l>
+            }
+        </b>
+    </h5>
     <br />
-    <p><b><i class="far fa-calendar-alt"></i> Дата на добавяне:</b> @Model.CreatedOn.ToShortDateString() | <b><i class="fas fa-user-tie"></i> Добавена от:</b> @(Model.AddedByUserUserName ?? "Неизвестен") | <b>
-    <i class="fas fa-user-check"></i> Обща оценка:
-    
-    <i data-vote="1" class="fas fa-star @if (Model.VotesAverageValue >= 1) {<text>text text-warning</text>}"></i>
-    <i data-vote="2" class="fas fa-star @if (Model.VotesAverageValue >= 2) {<text>text text-warning</text>}"></i>
-    <i data-vote="3" class="fas fa-star @if (Model.VotesAverageValue >= 3) {<text>text text-warning</text>}"></i>
-    <i data-vote="4" class="fas fa-star @if (Model.VotesAverageValue >= 4) {<text>text text-warning</text>}"></i>
-    <i data-vote="5" class="fas fa-star @if (Model.VotesAverageValue >= 4.6) {<text>text text-warning</text>}"></i>
+    <p>
+        <b><i class="far fa-calendar-alt"></i> Дата на добавяне:</b> @Model.CreatedOn.ToShortDateString() | <b><i class="fas fa-user-tie"></i> Добавена от:</b> @(Model.AddedByUserUserName ?? "Неизвестен") | <b>
+            <i class="fas fa-user-check"></i> Обща оценка:
 
-</b>  - <span id="averageVoteValue">@Model.VotesAverageValue.ToString("0.0")</span> от 5.0</p>
+            <i data-vote="1" class="fas fa-star @if (Model.VotesAverageValue >= 1) {<text>text text-warning</text>}"></i>
+            <i data-vote="2" class="fas fa-star @if (Model.VotesAverageValue >= 2) {<text>text text-warning</text>}"></i>
+            <i data-vote="3" class="fas fa-star @if (Model.VotesAverageValue >= 3) {<text>text text-warning</text>}"></i>
+            <i data-vote="4" class="fas fa-star @if (Model.VotesAverageValue >= 4) {<text>text text-warning</text>}"></i>
+            <i data-vote="5" class="fas fa-star @if (Model.VotesAverageValue >= 4.6) {<text>text text-warning</text>}"></i>
+
+        </b>  - <span id="averageVoteValue">@Model.VotesAverageValue.ToString("0.0")</span> от 5.0
+    </p>
     <p><b><i class="fas fa-history"></i> Време за подготовка: </b>@Model.PreparationTime.TotalMinutes минути. | <b><i class="fas fa-clock"></i> Време за готвене: </b>@Model.CookingTime.TotalMinutes минути. | <b><i class="fas fa-user-friends"></i> Брой порции: </b>@Model.PortionCount</p>
     <img class="img-fluid" src="@Model.ImageUrl" alt="снимка" />
     <hr />
@@ -46,12 +51,40 @@
     @if (User.IsInRole(GlobalConstants.AdministratorRoleName))
     {
         <hr />
-        <a asp-controller="Recipes" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success">Редактирай рецептата</a>
+        <div class="row">
+            <a asp-controller="Recipes" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success mr-2">Редактирай рецептата</a>
+
+            <form method="post" id="deleteForm" asp-action="Delete" asp-route-id="@Model.Id">
+            </form>
+            
+            <button data-toggle="modal" data-target="#deleteModal" type="submit" class="btn btn-danger">Изтрий рецептата</button>
+        </div>
     }
 
 </div>
 
 <form method="post" id="antiForgeryForm"></form>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Моля, потвърдете изтриването?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Рецептата "@Model.Name" ще бъде окончателно премахната. Моля потвърдете премахването?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Затваряне</button>
+                <button type="button" class="btn btn-danger" onclick="deleteForm.submit()">Потвърждавам</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>
@@ -59,7 +92,7 @@
             $(this).click(function () {
                 var value = $(this).attr("data-vote");
                 var recipeId = @Model.Id;
-                var antiForgeryToken = $('#antiForgeryForm input[name=__RequestVerificationToken]').val();               
+                var antiForgeryToken = $('#antiForgeryForm input[name=__RequestVerificationToken]').val();
 
                 var data = { recipeId: recipeId, value: value };
 

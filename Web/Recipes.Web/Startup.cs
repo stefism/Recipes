@@ -69,8 +69,9 @@
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
 
-            // Application services
-            services.AddTransient<IEmailSender, NullMessageSender>();
+            // Изпращане на e-mail:
+            // services.AddTransient<IEmailSender, NullMessageSender>(); // ТОва е от темплейта на Ники. Така настроен не прави нищо.
+            services.AddTransient<IEmailSender>(es => new SendGridEmailSender(this.configuration["SendGrid:ApiKey"])); // Така се настройва, като трябва да му се подаде api key. Не го подаваме направо тук от съображения за сигурност. Подаваме му го в appsettings.json
 
             services.AddTransient<IGetCountService, GetCountService>();
             services.AddTransient<ICategoriesService, CategoriesService>();
