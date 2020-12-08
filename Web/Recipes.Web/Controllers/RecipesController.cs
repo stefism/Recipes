@@ -8,6 +8,7 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Recipes.Common;
     using Recipes.Data.Models;
     using Recipes.Services.Data;
     using Recipes.Web.ViewModels.Recipes;
@@ -29,7 +30,7 @@
             this.environment = environment;
         }
 
-        [Authorize]
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public IActionResult Edit(int id)
         {
             var inputModel = this.recipeService.GetById<EditRecipeInputModel>(id);
@@ -40,15 +41,17 @@
         }
 
         [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> Edit(int id, EditRecipeInputModel recipe)
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+        public async Task<IActionResult> Edit(int id, EditRecipeInputModel input)
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View();
+                input.CategoriesItems = this.categoriesService
+                    .GetAllAsKeyValuePairs();
+                return this.View(input);
             }
 
-            await this.recipeService.UpdateAsync(id, recipe);
+            await this.recipeService.UpdateAsync(id, input);
 
             return this.RedirectToAction(nameof(this.ById), new { id }); // new { id } (new { id  = id})- би трябвало горе в адрес бара да сложи Id-то.
         }

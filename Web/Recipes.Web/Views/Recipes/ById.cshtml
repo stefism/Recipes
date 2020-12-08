@@ -1,4 +1,7 @@
-﻿@model Recipes.Web.ViewModels.Recipes.SingleRecipeViewModel
+﻿@using Recipes.Web.ViewModels.Recipes
+@using Recipes.Common
+@model SingleRecipeViewModel
+
 @{
     ViewData["Title"] = Model.Name;
 }
@@ -39,6 +42,13 @@
     <hr />
     <h5><i class="fas fa-book-open"></i> Начин на приготвяне:</h5>
     <p>@Model.Instructions</p>
+
+    @if (User.IsInRole(GlobalConstants.AdministratorRoleName))
+    {
+        <hr />
+        <a asp-controller="Recipes" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success">Редактирай рецептата</a>
+    }
+
 </div>
 
 <form method="post" id="antiForgeryForm"></form>

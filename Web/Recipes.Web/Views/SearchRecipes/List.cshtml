@@ -1,0 +1,22 @@
+﻿@model Recipes.Web.ViewModels.SearchRecipes.ListViewModel
+
+@{ 
+    ViewData["Title"] = "Резултат от търсенето";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    <hr />
+    @foreach (var recipe in Model.Recipes)
+    {
+        <div class="card col-md-3" style="width: 18rem;">
+            <img class="card-img-top" src="@recipe.ImageUrl" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">@recipe.Name</h5>
+                <p class="card-text">@recipe.CategoryName</p>
+                <a asp-controller="Recipes" asp-action="ById" asp-route-id="@recipe.Id" class="btn btn-primary">Виж рецептата</a>
+            </div>
+        </div>
+    }
+</div>

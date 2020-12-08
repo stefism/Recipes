@@ -128,6 +128,18 @@
             return recipe;
         }
 
+        public IEnumerable<T> GetByIngredients<T>(IEnumerable<int> ingredientsIds)
+        {
+            var query = this.recipesRepository.All().AsQueryable();
+            // При този метод, заявката все още не е изпратена до базата и това ни позволява да натрупваме няколко условия едно след друго към заявката и накрая да я пратим към базата.
+            foreach (var ingredientId in ingredientsIds)
+            {
+                query = query.Where(r => r.Ingredients.Any(i => i.IngredientId == ingredientId)); // Трупаме where клаузи към заявката (query).
+            }
+
+            return query.To<T>().ToList();
+        }
+
         public int GetCount()
         {
             return this.recipesRepository.All().Count();
