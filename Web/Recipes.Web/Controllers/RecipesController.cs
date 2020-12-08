@@ -2,6 +2,7 @@
 {
     using System;
     using System.Security.Claims;
+    using System.Text;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,7 @@
     using Recipes.Common;
     using Recipes.Data.Models;
     using Recipes.Services.Data;
+    using Recipes.Services.Messaging;
     using Recipes.Web.ViewModels.Recipes;
 
     public class RecipesController : Controller
@@ -19,15 +21,22 @@
         private readonly IRecipeService recipeService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IWebHostEnvironment environment;
+        private readonly IEmailSender emailSender;
 
-        public RecipesController(ICategoriesService categoriesService, IRecipeService recipeService, UserManager<ApplicationUser> userManager, IWebHostEnvironment environment)
-
-            // IWebHostEnvironment environment - това ще ни даде пътя до wwwroot. Тука се ползва се оказа.
+        public RecipesController(
+            ICategoriesService categoriesService,
+            IRecipeService recipeService,
+            UserManager<ApplicationUser> userManager,
+            IWebHostEnvironment environment,
+            IEmailSender emailSender)
+        // Recipes.Services.Messaging - има 2 нейм спейса за мейла. Трябва да е този!
+        // IWebHostEnvironment environment - това ще ни даде пътя до wwwroot. Тука се ползва се оказа.
         {
             this.categoriesService = categoriesService;
             this.recipeService = recipeService;
             this.userManager = userManager;
             this.environment = environment;
+            this.emailSender = emailSender;
         }
 
         [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
@@ -139,6 +148,24 @@
         {
             await this.recipeService.DeleteAsync(id);
             return this.RedirectToAction(nameof(this.All));
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> SendtoEmail(int id)
+        {
+            var user = await this.userManager.GetUserAsync(this.User);
+            var userEmail = await this.userManager.GetEmailAsync(user);
+
+            var recipe = this.recipeService.GetById<SingleRecipeViewModel>(id);
+
+            var html = new StringBuilder();
+            html.AppendLine($"<h1>{recipe.Name}</h1>");
+            html.AppendLine($"<h3>{recipe.Name}</h3>");
+            html.AppendLine($"<p>{recipe.Instructions}</p>");
+            await this.emailSender.SendEmailAsync("stef4otm@gmail.com", "Сайта за рецепти", userEmail, recipe.Name, html.ToString());
+
+            return this.RedirectToAction(nameof(this.ById), new { id });
         }
     }
 }
