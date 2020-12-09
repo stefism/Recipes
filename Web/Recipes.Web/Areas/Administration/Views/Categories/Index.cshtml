@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create" class="btn btn-primary">Създай нова категория</a>
 </p>
-<table class="table table-bordered table-hover table-striped">
+<table class="table table-bordered table-hover table-striped" id="DataTable">
     <thead>
         <tr>
             <th>
@@ -39,3 +39,11 @@
 }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#DataTable').DataTable();
+        });
+    </script>
+}
