@@ -23,6 +23,8 @@
             return this.View(await this.dataRepository.All()
                 .OrderBy(x => x.Name)
                 .ToListAsync());
+
+            return this.RedirectToAction("Index", "Home", new { area = string.Empty }); // Редирект от ареа към контролер и метод, които не са в ареа. Когато ериата е празна, се разбира дефолтната ериа.
         }
 
         // GET: Administration/Categories/Details/5
