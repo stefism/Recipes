@@ -170,6 +170,8 @@
             return this.RedirectToAction(nameof(this.ById), new { id });
         }
 
+        [HttpPost]
+        [Authorize]
         public async Task<IActionResult> SendFromGmail(int id)
         {
             var user = await this.userManager.GetUserAsync(this.User);
