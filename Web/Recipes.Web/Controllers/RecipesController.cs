@@ -1,6 +1,8 @@
 ﻿namespace Recipes.Web.Controllers
 {
     using System;
+    using System.Net;
+    using System.Net.Mail;
     using System.Security.Claims;
     using System.Text;
     using System.Threading.Tasks;
@@ -164,6 +166,45 @@
             html.AppendLine($"<h3>{recipe.Name}</h3>");
             html.AppendLine($"<p>{recipe.Instructions}</p>");
             await this.emailSender.SendEmailAsync("stef4otm@gmail.com", "Сайта за рецепти", userEmail, recipe.Name, html.ToString());
+
+            return this.RedirectToAction(nameof(this.ById), new { id });
+        }
+
+        public async Task<IActionResult> SendFromGmail(int id)
+        {
+            var user = await this.userManager.GetUserAsync(this.User);
+            var userEmail = await this.userManager.GetEmailAsync(user);
+
+            var recipe = this.recipeService.GetById<SingleRecipeViewModel>(id);
+
+            var html = new StringBuilder();
+            html.AppendLine($"<h1>{recipe.Name}</h1>");
+            html.AppendLine($"<h3>{recipe.Name}</h3>");
+            html.AppendLine($"<p>{recipe.Instructions}</p>");
+
+            var fromAddress = new MailAddress("stef4otm@gmail.com", "Test Name");
+            var toAddress = new MailAddress("stefan.t.markov@gmail.com", "To Name");
+            const string fromPassword = Credential.Gmail;
+            const string subject = "test";
+            string body = html.ToString();
+
+            var smtp = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                Credentials = new NetworkCredential(fromAddress.Address, fromPassword),
+                Timeout = 20000,
+            };
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = body,
+            })
+            {
+                smtp.Send(message);
+            }
 
             return this.RedirectToAction(nameof(this.ById), new { id });
         }
