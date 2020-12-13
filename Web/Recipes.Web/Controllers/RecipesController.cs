@@ -182,8 +182,8 @@
             html.AppendLine($"<h3>{recipe.Name}</h3>");
             html.AppendLine($"<p>{recipe.Instructions}</p>");
 
-            var fromAddress = new MailAddress("stef4otm@gmail.com", "Test Name");
-            var toAddress = new MailAddress("stefan.t.markov@gmail.com", "To Name");
+            var fromAddress = new MailAddress(userEmail, "Test Name");
+            var toAddress = new MailAddress("someAddress@gmail.com", "To Name");
             const string fromPassword = Credential.Gmail;
             const string subject = "test";
             string body = html.ToString();
